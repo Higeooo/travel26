@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지리적 질문 만들기</title>
+
+<style>
+/* ===================== 기본 리셋 & 폰트 ===================== */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --navy:    #1a3557;
+  --navy-lt: #2a4f7a;
+  --accent:  #3b82c4;
+  --bg:      #f2f5fa;
+  --white:   #ffffff;
+  --border:  #d0daea;
+  --text:    #1e2c3a;
+  --muted:   #6b7a8d;
+  --radius:  10px;
+  --shadow:  0 2px 10px rgba(26,53,87,0.10);
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  padding-bottom: 60px;
+}
+
+/* ===================== 상단 고정 바 ===================== */
+#top-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--navy);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+}
+.top-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.top-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-right: auto;
+  white-space: nowrap;
+}
+.meta-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.meta-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  white-space: nowrap;
+}
+.meta-input {
+  height: 34px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  padding: 0 10px;
+  outline: none;
+  transition: border-color .2s, background .2s;
+}
+.meta-input::placeholder { color: rgba(255,255,255,0.45); }
+.meta-input:focus {
+  border-color: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.22);
+}
+#inp-id   { width: 100px; }
+#inp-name { width: 90px;  }
+
+/* ===================== 본문 컨테이너 ===================== */
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* ===================== 안내 박스 ===================== */
+.notice-box {
+  background: #e8f0fb;
+  border: 1px solid #c0d3ef;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.notice-box .notice-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+.notice-box ul { list-style: none; padding: 0; }
+.notice-box li {
+  font-size: 13px;
+  color: #374a62;
+  line-height: 1.85;
+  padding-left: 1.2em;
+  position: relative;
+}
+.notice-box li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ===================== 공통 카드 ===================== */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.card-top-bar {
+  height: 4px;
+  background: var(--navy);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+/* ===================== 주제 + 이미지 업로드 카드 ===================== */
+.setup-card {
+  padding: 18px 20px 20px;
+}
+.setup-card .card-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.setup-card .text-input {
+  width: 100%;
+  height: 40px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 0 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: #fafbfd;
+  outline: none;
+  transition: border-color .2s;
+  margin-bottom: 16px;
+}
+.setup-card .text-input:focus { border-color: var(--accent); }
+.setup-card .text-input::placeholder { color: #a0aab8; }
+
+/* 이미지 업로드 드롭존 */
+.img-upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: #f8fafd;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+  position: relative;
+}
+.img-upload-zone:hover,
+.img-upload-zone.dragover {
+  border-color: var(--accent);
+  background: #eef4fb;
+}
+.img-upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.img-upload-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+  display: block;
+}
+.img-upload-text {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.img-upload-text strong { color: var(--accent); }
+
+/* 미리보기 영역 */
+.img-preview-wrap {
+  display: none;
+  margin-top: 12px;
+  position: relative;
+}
+.img-preview-wrap.show { display: block; }
+.img-preview {
+  width: 100%;
+  max-height: 260px;
+  object-fit: contain;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: #f0f4fa;
+  display: block;
+}
+.img-remove-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(30,44,58,0.75);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background .15s;
+}
+.img-remove-btn:hover { background: rgba(220,38,38,0.85); }
+.img-filename {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 5px;
+  text-align: center;
+}
+
+/* ===================== 질문 카드 ===================== */
+.q-card .q-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 18px 11px;
+  border-bottom: 1px solid var(--border);
+}
+.step-badge {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-top: 2px;
+}
+.q-meta { flex: 1; min-width: 0; }
+.q-key  { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1.4; }
+.q-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.hint-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #f5f7fa;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background .15s;
+  white-space: nowrap;
+}
+.hint-btn:hover { background: #e8ecf4; }
+
+.hint-box {
+  display: none;
+  margin: 10px 18px 0;
+  padding: 10px 14px;
+  background: #eef4fc;
+  border-radius: 7px;
+  border-left: 3px solid var(--accent);
+}
+.hint-box.open { display: block; }
+.hint-box ul { list-style: none; padding: 0; }
+.hint-box li {
+  font-size: 12px;
+  color: #3a5070;
+  line-height: 1.9;
+  padding-left: 1.3em;
+  position: relative;
+}
+.hint-box li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  font-size: 9px;
+  color: var(--accent);
+  top: 4px;
+}
+
+.q-body { padding: 12px 18px 16px; }
+.q-body textarea {
+  width: 100%;
+  min-height: 78px;
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 11px 13px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.75;
+  background: #fafbfd;
+  resize: vertical;
+  outline: none;
+  transition: border-color .2s;
+}
+.q-body textarea:focus  { border-color: var(--accent); }
+.q-body textarea::placeholder { color: #a0aab8; font-size: 13px; }
+
+/* ===================== 제출 버튼 ===================== */
+.submit-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}
+#btn-submit {
+  height: 50px;
+  padding: 0 52px;
+  background: var(--navy);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 14px rgba(26,53,87,0.30);
+  transition: background .2s, transform .1s, box-shadow .2s;
+}
+#btn-submit:hover   { background: var(--navy-lt); box-shadow: 0 6px 18px rgba(26,53,87,0.38); }
+#btn-submit:active  { transform: scale(0.97); }
+#btn-submit:disabled { background: #a0aab8; cursor: not-allowed; box-shadow: none; }
+
+/* ===================== 진행 표시 ===================== */
+#progress-bar-wrap {
+  display: none;
+  max-width: 860px;
+  margin: 16px auto 0;
+  padding: 0 16px;
+}
+#progress-bar-wrap.show { display: block; }
+.progress-bg {
+  background: #dce6f0;
+  border-radius: 20px;
+  height: 7px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 20px;
+  width: 0%;
+  transition: width .4s ease;
+}
+.progress-label {
+  font-size: 12px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 5px;
+}
+
+/* ===================== 토스트 ===================== */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #1e2c3a;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s, transform .3s;
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+#toast.show  { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.error { background: #b91c1c; }
+#toast.ok    { background: #0f6e56; }
+
+/* ===================== 반응형 ===================== */
+@media (max-width: 640px) {
+  .top-inner   { padding: 10px 14px; }
+  .top-title   { font-size: 14px; width: 100%; margin-right: 0; }
+  .meta-group  { width: 100%; justify-content: flex-start; }
+  #inp-id      { width: 86px; }
+  #inp-name    { width: 80px; }
+
+  .container   { padding: 16px 12px; }
+  .setup-card  { padding: 14px 14px 16px; }
+  .q-header    { padding: 11px 14px 9px; gap: 9px; }
+  .q-body      { padding: 10px 14px 14px; }
+  .hint-box    { margin: 8px 14px 0; }
+  #btn-submit  { width: 100%; max-width: 340px; }
+}
+@media (max-width: 380px) {
+  .step-badge  { width: 26px; height: 26px; font-size: 12px; }
+  .q-key       { font-size: 13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- =============== 상단 고정 바 =============== -->
+<div id="top-bar">
+  <div class="top-inner">
+    <span class="top-title">지리적 질문 만들기</span>
+    <div class="meta-group">
+      <span class="meta-label">학번</span>
+      <input id="inp-id"   class="meta-input" type="text" placeholder="예) 10201">
+      <span class="meta-label">이름</span>
+      <input id="inp-name" class="meta-input" type="text" placeholder="홍길동">
+    </div>
+  </div>
+</div>
+
+<!-- =============== 메인 컨텐츠 =============== -->
+<div class="container">
+
+  <!-- 안내 박스 -->
+  <div class="notice-box">
+    <div class="notice-title">📌 활동 전 꼭 읽어보세요</div>
+    <ul>
+      <li>지금은 <strong>질문을 던지는 시간</strong>입니다. 답을 알고 있든 모르든 상관없이 질문을 만들어보세요.</li>
+      <li>선택한 이미지·영상의 <strong>상황과 맥락을 반영</strong>해서 질문을 구체적으로 작성하세요.</li>
+      <li>💡 어려움의 있는 경우 힌트 버튼을 누르면 질문 만들기 도움말이 펼쳐집니다.</li>
+    </ul>
+  </div>
+
+  <!-- 탐구 주제 + 이미지 업로드 카드 -->
+  <div class="card">
+    <div class="card-top-bar"></div>
+    <div class="setup-card">
+
+      <!-- 탐구 주제 -->
+      <div class="card-label">📝 탐구 주제</div>
+      <input id="inp-topic" class="text-input"
+             type="text"
+             placeholder="예) 서울 대림동 차이나타운 사진 — 이민자 집단 거주지의 형성">
+
+      <!-- 이미지 업로드 -->
+      <div class="card-label">🖼 탐구 이미지 첨부 <span style="font-weight:400;color:var(--muted)">(선택)</span></div>
+      <div class="img-upload-zone" id="upload-zone">
+        <input type="file" id="img-file" accept="image/*" onchange="onFileChange(event)">
+        <span class="img-upload-icon">📂</span>
+        <div class="img-upload-text">
+          <strong>클릭</strong>하거나 이미지를 여기로 <strong>드래그</strong>해서 올려주세요<br>
+          <span style="font-size:12px">JPG, PNG, GIF, WEBP — 최대 5MB</span>
+        </div>
+      </div>
+      <div class="img-preview-wrap" id="preview-wrap">
+        <img id="img-preview" class="img-preview" src="" alt="미리보기">
+        <button class="img-remove-btn" onclick="removeImage()" title="이미지 제거">✕</button>
+        <div class="img-filename" id="img-filename"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 질문 카드 목록 (JS 렌더링) -->
+  <div id="q-cards"></div>
+
+  <!-- 제출 버튼 -->
+  <div class="submit-area">
+    <button id="btn-submit" onclick="submitData()">📤 제출하기</button>
+  </div>
+
+  <!-- 진행 표시 -->
+  <div id="progress-bar-wrap">
+    <div class="progress-bg">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-label" id="progress-label">제출 준비 중...</div>
+  </div>
+
+</div>
+
+<!-- 토스트 -->
+<div id="toast"></div>
+
+<script>
+// ================================================================
+//  ★ 여기에 Apps Script 웹 앱 URL을 붙여 넣으세요 ★
+//  배포 > 웹 앱으로 배포 > URL 복사 후 아래 문자열과 교체
+// ================================================================
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbwAp6Brj5ujl3n8aislfmublUuS9lnh9QF0ELgEpH0wT9dVV961L1QlQ03FxqS3SzKj/exec';
+
+// ================================================================
+//  단계 데이터
+// ================================================================
+var STEPS = [
+  {
+    id: 0, color: '#6b7a8d',
+    key: '무엇인가?', desc: '현상·대상 파악',
+    ph: '이 장소 / 현상은 무엇인가? 처음 보는 사람에게 어떻게 설명할 수 있을까?',
+    hints: [
+      '사진 속 장소·사물·현상의 이름을 먼저 파악해 보세요.',
+      '"이것은 단순히 ○○일까, 아니면 그 이상일까?"처럼 정의를 의심해 보세요.',
+      '한 문장으로 설명하기 어렵다면, 그게 이미 좋은 질문의 시작입니다.'
+    ]
+  },
+  {
+    id: 1, color: '#2563eb',
+    key: '어디인가? 왜 거기인가?', desc: '위치·입지 분석',
+    ph: '왜 이 현상은 이 장소에서 나타나는가? 다른 곳이 아니라 왜 여기인가?',
+    hints: [
+      '장소 이름을 질문에 직접 넣어 구체화하세요. (예: "왜 차이나타운은 대림동에?")',
+      '이 현상이 나타나지 않는 장소와 비교해 보세요.',
+      '입지 조건(교통, 임대료, 역사 등)을 떠올리며 질문을 확장해 보세요.'
+    ]
+  },
+  {
+    id: 2, color: '#0d9488',
+    key: '어떻게 변화해 왔는가?', desc: '시간적 변화·원인·기술',
+    ph: '과거와 현재를 비교하면 어떻게 달라졌나? 무엇이 변화를 이끌었나?',
+    hints: [
+      '"10년 전", "20년 전"처럼 구체적인 시점을 질문에 넣어 보세요.',
+      '변화를 일으킨 요인(기술, 정책, 인구 등)을 하나씩 물어보세요.',
+      '배달앱·SNS 등 기술이 이 현상에 어떤 영향을 미쳤는지도 생각해 보세요.'
+    ]
+  },
+  {
+    id: 3, color: '#d97706',
+    key: '다른 지역과 어떻게 연결·비교되는가?', desc: '공간적 연결·비교',
+    ph: '이 현상은 다른 지역과 어떻게 이어지는가? 어떤 면에서 비슷하고 다른가?',
+    hints: [
+      '사람·물자·정보·자본이 어느 지역과 오가는지 물어보세요.',
+      '비슷한 현상이 다른 도시나 나라에도 있는지 비교해 보세요.',
+      '"글로벌-로컬"로 어떻게 이어지는지 생각해 보세요.'
+    ]
+  },
+  {
+    id: 4, color: '#dc2626',
+    key: '어떻게 변화해야 하는가?', desc: '가치 판단·미래 전망',
+    ph: '현재 상태가 지속된다면 어떤 문제가 생길까? 어떤 방향으로 바뀌어야 할까?',
+    hints: [
+      '현재 상태를 그대로 두면 누가 이득을 보고 누가 손해를 볼지 생각해 보세요.',
+      '"지속가능성", "형평성", "주민의 삶"을 기준으로 바람직한 방향을 물어보세요.',
+      '답이 여러 개일 수 있는 열린 질문을 만들어 보세요.'
+    ]
+  },
+  {
+    id: 5, color: '#7c3aed',
+    key: '어떻게 재현되고 있는가?', desc: '미디어·담론·정당성',
+    ph: '이 장소·현상은 미디어에서 어떻게 표현되고 있나? 그 표현은 공정한가?',
+    hints: [
+      'TV, 유튜브, 뉴스에서 이 장소를 어떤 단어로 묘사하는지 생각해 보세요.',
+      '"긍정적 재현"과 "부정적 재현" 모두 찾아보세요.',
+      '재현이 특정 집단에 대한 편견을 강화하지는 않는지 물어보세요.'
+    ]
+  }
+];
+
+// ================================================================
+//  카드 렌더링
+// ================================================================
+(function renderCards() {
+  var container = document.getElementById('q-cards');
+  STEPS.forEach(function(s) {
+    var hintItems = s.hints.map(function(t) { return '<li>' + t + '</li>'; }).join('');
+    var card = document.createElement('div');
+    card.className = 'card q-card';
+    card.innerHTML =
+      '<div class="q-header">' +
+        '<div class="step-badge" style="background:' + s.color + '">' + s.id + '</div>' +
+        '<div class="q-meta">' +
+          '<div class="q-key">' + s.key + '</div>' +
+          '<div class="q-desc">' + s.desc + '</div>' +
+        '</div>' +
+        '<button class="hint-btn" onclick="toggleHint(this)">💡 힌트 보기</button>' +
+      '</div>' +
+      '<div class="hint-box"><ul>' + hintItems + '</ul></div>' +
+      '<div class="q-body">' +
+        '<textarea id="q' + s.id + '" rows="3" placeholder="' + s.ph + '"></textarea>' +
+      '</div>';
+    container.appendChild(card);
+  });
+})();
+
+// ================================================================
+//  힌트 토글
+// ================================================================
+function toggleHint(btn) {
+  var box = btn.closest('.q-card').querySelector('.hint-box');
+  var open = box.classList.toggle('open');
+  btn.textContent = open ? '💡 힌트 닫기' : '💡 힌트 보기';
+}
+
+// ================================================================
+//  이미지 관련
+// ================================================================
+var selectedImageBase64 = '';
+
+// 드래그 앤 드롭
+var zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover',  function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', function()  { zone.classList.remove('dragover'); });
+zone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  zone.classList.remove('dragover');
+  var file = e.dataTransfer.files[0];
+  if (file) processFile(file);
+});
+
+function onFileChange(e) {
+  var file = e.target.files[0];
+  if (file) processFile(file);
+}
+
+function processFile(file) {
+  if (!file.type.startsWith('image/')) {
+    showToast('이미지 파일만 첨부할 수 있습니다.', 'error'); return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('파일 크기는 5MB 이하여야 합니다.', 'error'); return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    selectedImageBase64 = ev.target.result;
+    document.getElementById('img-preview').src = selectedImageBase64;
+    document.getElementById('img-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+    document.getElementById('preview-wrap').classList.add('show');
+    document.getElementById('upload-zone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage() {
+  selectedImageBase64 = '';
+  document.getElementById('img-preview').src = '';
+  document.getElementById('img-filename').textContent = '';
+  document.getElementById('preview-wrap').classList.remove('show');
+  document.getElementById('upload-zone').style.display = '';
+  document.getElementById('img-file').value = '';
+}
+
+// ================================================================
+//  진행 표시
+// ================================================================
+function setProgress(pct, label) {
+  var wrap = document.getElementById('progress-bar-wrap');
+  wrap.classList.add('show');
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = label;
+}
+function hideProgress() {
+  document.getElementById('progress-bar-wrap').classList.remove('show');
+}
+
+// ================================================================
+//  토스트
+// ================================================================
+function showToast(msg, type, duration) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function() { t.className = ''; }, duration || 2800);
+}
+
+// ================================================================
+//  제출 처리
+// ================================================================
+function submitData() {
+  var studentId = document.getElementById('inp-id').value.trim();
+  var name      = document.getElementById('inp-name').value.trim();
+  var topic     = document.getElementById('inp-topic').value.trim();
+
+  if (!studentId || !name) {
+    showToast('상단에서 학번과 이름을 먼저 입력해주세요.', 'error'); return;
+  }
+
+  var btn = document.getElementById('btn-submit');
+  btn.disabled = true;
+  btn.textContent = '제출 중...';
+  setProgress(10, '데이터 준비 중...');
+
+  var payload = {
+    studentId:   studentId,
+    name:        name,
+    topic:       topic,
+    imageBase64: selectedImageBase64,
+    q0: document.getElementById('q0').value,
+    q1: document.getElementById('q1').value,
+    q2: document.getElementById('q2').value,
+    q3: document.getElementById('q3').value,
+    q4: document.getElementById('q4').value,
+    q5: document.getElementById('q5').value
+  };
+
+  // 이미지 크기에 따라 진행 상태 안내
+  if (selectedImageBase64) {
+    setProgress(30, '이미지 업로드 중...');
+  } else {
+    setProgress(50, '서버에 전송 중...');
+  }
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',          // GAS 웹앱은 no-cors 필요
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    setProgress(100, '제출 완료!');
+    setTimeout(hideProgress, 1800);
+    showToast('✅ 제출이 완료되었습니다! ', 'ok', 4000);
+    btn.textContent = '✅ 제출 완료';
+    setTimeout(function() {
+      btn.disabled = false;
+      btn.textContent = '📤 제출하기';
+    }, 4500);
+  })
+  .catch(function() {
+    hideProgress();
+    showToast('오류가 발생했습니다. 네트워크 상태를 확인하고 다시 시도해주세요.', 'error', 4000);
+    btn.disabled = false;
+    btn.textContent = '📤 제출하기';
+  });
+}
+</script>
+</body>
+</html>
