@@ -457,15 +457,8 @@ body {
 <div id="toast"></div>
 
 <script>
-// ================================================================
-//  GAS 웹앱 URL
-// ================================================================
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbxxzodGL7eiqMbXdumyVocUn-fjr6QL8_VzZ9UrEs8LiLrUYMYm3VDZe6n9lU_0re87/exec';
 
-// ================================================================
-//  단계 데이터
-//  ★ 버그 수정: id를 0~5로 통일 → textarea id(q0~q5)와 payload 키가 일치
-// ================================================================
 var STEPS = [
   {
     id: 0, color: '#6b7a8d',
@@ -529,9 +522,6 @@ var STEPS = [
   }
 ];
 
-// ================================================================
-//  카드 렌더링 — textarea id = q0~q5 생성
-// ================================================================
 (function renderCards() {
   var container = document.getElementById('q-cards');
   STEPS.forEach(function(s) {
@@ -555,18 +545,12 @@ var STEPS = [
   });
 })();
 
-// ================================================================
-//  힌트 토글
-// ================================================================
 function toggleHint(btn) {
   var box = btn.closest('.q-card').querySelector('.hint-box');
   var open = box.classList.toggle('open');
   btn.textContent = open ? '💡 힌트 닫기' : '💡 힌트 보기';
 }
 
-// ================================================================
-//  이미지 관련
-// ================================================================
 var selectedImageBase64 = '';
 
 var zone = document.getElementById('upload-zone');
@@ -612,9 +596,6 @@ function removeImage() {
   document.getElementById('img-file').value = '';
 }
 
-// ================================================================
-//  진행 표시
-// ================================================================
 function setProgress(pct, label) {
   document.getElementById('progress-bar-wrap').classList.add('show');
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -624,9 +605,6 @@ function hideProgress() {
   document.getElementById('progress-bar-wrap').classList.remove('show');
 }
 
-// ================================================================
-//  토스트
-// ================================================================
 function showToast(msg, type, duration) {
   var t = document.getElementById('toast');
   t.textContent = msg;
@@ -635,9 +613,6 @@ function showToast(msg, type, duration) {
   t._timer = setTimeout(function() { t.className = ''; }, duration || 2800);
 }
 
-// ================================================================
-//  제출 처리
-// ================================================================
 function submitData() {
   var classGroup = document.getElementById('inp-class').value.trim();
   var studentId  = document.getElementById('inp-id').value.trim();
@@ -653,7 +628,6 @@ function submitData() {
   btn.textContent = '제출 중...';
   setProgress(10, '데이터 준비 중...');
 
-  // ★ 버그 수정: q0~q5로 읽기 (STEPS id 0~5, textarea id q0~q5와 일치)
   var payload = {
     classGroup:  classGroup,
     studentId:   studentId,
@@ -669,14 +643,14 @@ function submitData() {
   };
 
   if (selectedImageBase64) {
-    setProgress(30, '이미지 업로드 중...');
+    setProgress(30, '이미지 업로드 중... (시간이 걸릴 수 있습니다)');
   } else {
     setProgress(50, '서버에 전송 중...');
   }
 
-  // ★ AbortController: 15초 초과 시 타임아웃 처리
+  // ★ 타임아웃 30초 (이미지 업로드 포함 시 충분한 여유)
   var controller = new AbortController();
-  var timer = setTimeout(function() { controller.abort(); }, 15000);
+  var timer = setTimeout(function() { controller.abort(); }, 30000);
 
   fetch(GAS_URL, {
     method:  'POST',
@@ -700,9 +674,9 @@ function submitData() {
     clearTimeout(timer);
     hideProgress();
     var msg = (err.name === 'AbortError')
-      ? '⏱ 서버 응답 초과 — GAS 배포 설정을 확인해주세요.'
-      : '❌ 오류: ' + err.message;
-    showToast(msg, 'error', 6000);
+      ? '⏱ 30초 초과 — 이미지 없이 다시 시도하거나 GAS 배포를 확인해주세요.'
+      : '❌ 네트워크 오류: ' + err.message;
+    showToast(msg, 'error', 7000);
     console.error('fetch 오류:', err);
     btn.disabled = false;
     btn.textContent = '📤 제출하기';
