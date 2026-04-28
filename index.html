@@ -6,7 +6,6 @@
 <title>지리적 질문 만들기</title>
 
 <style>
-/* ===================== 기본 리셋 & 폰트 ===================== */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +31,6 @@ body {
   padding-bottom: 60px;
 }
 
-/* ===================== 상단 고정 바 ===================== */
 #top-bar {
   position: sticky;
   top: 0;
@@ -84,19 +82,16 @@ body {
   border-color: rgba(255,255,255,0.7);
   background: rgba(255,255,255,0.22);
 }
-/* ★ 수정: #inp-class 추가 */
 #inp-class { width: 80px;  }
 #inp-id    { width: 100px; }
 #inp-name  { width: 90px;  }
 
-/* ===================== 본문 컨테이너 ===================== */
 .container {
   max-width: 860px;
   margin: 0 auto;
   padding: 24px 16px;
 }
 
-/* ===================== 안내 박스 ===================== */
 .notice-box {
   background: #e8f0fb;
   border: 1px solid #c0d3ef;
@@ -127,7 +122,6 @@ body {
   color: var(--accent);
 }
 
-/* ===================== 공통 카드 ===================== */
 .card {
   background: var(--white);
   border: 1px solid var(--border);
@@ -142,10 +136,7 @@ body {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
-/* ===================== 주제 + 이미지 업로드 카드 ===================== */
-.setup-card {
-  padding: 18px 20px 20px;
-}
+.setup-card { padding: 18px 20px 20px; }
 .setup-card .card-label {
   font-size: 12px;
   font-weight: 700;
@@ -172,7 +163,6 @@ body {
 .setup-card .text-input:focus { border-color: var(--accent); }
 .setup-card .text-input::placeholder { color: #a0aab8; }
 
-/* 이미지 업로드 드롭존 */
 .img-upload-zone {
   border: 2px dashed var(--border);
   border-radius: var(--radius);
@@ -196,24 +186,11 @@ body {
   width: 100%;
   height: 100%;
 }
-.img-upload-icon {
-  font-size: 28px;
-  margin-bottom: 6px;
-  display: block;
-}
-.img-upload-text {
-  font-size: 13px;
-  color: var(--muted);
-  line-height: 1.7;
-}
+.img-upload-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+.img-upload-text { font-size: 13px; color: var(--muted); line-height: 1.7; }
 .img-upload-text strong { color: var(--accent); }
 
-/* 미리보기 영역 */
-.img-preview-wrap {
-  display: none;
-  margin-top: 12px;
-  position: relative;
-}
+.img-preview-wrap { display: none; margin-top: 12px; position: relative; }
 .img-preview-wrap.show { display: block; }
 .img-preview {
   width: 100%;
@@ -226,31 +203,22 @@ body {
 }
 .img-remove-btn {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 6px; right: 6px;
   background: rgba(30,44,58,0.75);
   color: #fff;
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
   transition: background .15s;
 }
 .img-remove-btn:hover { background: rgba(220,38,38,0.85); }
-.img-filename {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 5px;
-  text-align: center;
-}
+.img-filename { font-size: 11px; color: var(--muted); margin-top: 5px; text-align: center; }
 
-/* ===================== 질문 카드 ===================== */
 .q-card .q-header {
   display: flex;
   align-items: flex-start;
@@ -260,8 +228,7 @@ body {
 }
 .step-badge {
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
+  width: 30px; height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -335,12 +302,7 @@ body {
 .q-body textarea:focus  { border-color: var(--accent); }
 .q-body textarea::placeholder { color: #a0aab8; font-size: 13px; }
 
-/* ===================== 제출 버튼 ===================== */
-.submit-area {
-  display: flex;
-  justify-content: center;
-  margin-top: 26px;
-}
+.submit-area { display: flex; justify-content: center; margin-top: 26px; }
 #btn-submit {
   height: 50px;
   padding: 0 52px;
@@ -360,7 +322,6 @@ body {
 #btn-submit:active  { transform: scale(0.97); }
 #btn-submit:disabled { background: #a0aab8; cursor: not-allowed; box-shadow: none; }
 
-/* ===================== 진행 표시 ===================== */
 #progress-bar-wrap {
   display: none;
   max-width: 860px;
@@ -381,14 +342,8 @@ body {
   width: 0%;
   transition: width .4s ease;
 }
-.progress-label {
-  font-size: 12px;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 5px;
-}
+.progress-label { font-size: 12px; color: var(--muted); text-align: center; margin-top: 5px; }
 
-/* ===================== 토스트 ===================== */
 #toast {
   position: fixed;
   bottom: 28px;
@@ -413,37 +368,32 @@ body {
 #toast.error { background: #b91c1c; }
 #toast.ok    { background: #0f6e56; }
 
-/* ===================== 반응형 ===================== */
 @media (max-width: 640px) {
-  .top-inner   { padding: 10px 14px; }
-  .top-title   { font-size: 14px; width: 100%; margin-right: 0; }
-  .meta-group  { width: 100%; justify-content: flex-start; }
-  /* ★ 수정: #inp-class 추가 */
-  #inp-class   { width: 72px; }
-  #inp-id      { width: 86px; }
-  #inp-name    { width: 80px; }
-
-  .container   { padding: 16px 12px; }
-  .setup-card  { padding: 14px 14px 16px; }
-  .q-header    { padding: 11px 14px 9px; gap: 9px; }
-  .q-body      { padding: 10px 14px 14px; }
-  .hint-box    { margin: 8px 14px 0; }
-  #btn-submit  { width: 100%; max-width: 340px; }
+  .top-inner  { padding: 10px 14px; }
+  .top-title  { font-size: 14px; width: 100%; margin-right: 0; }
+  .meta-group { width: 100%; justify-content: flex-start; }
+  #inp-class  { width: 72px; }
+  #inp-id     { width: 86px; }
+  #inp-name   { width: 80px; }
+  .container  { padding: 16px 12px; }
+  .setup-card { padding: 14px 14px 16px; }
+  .q-header   { padding: 11px 14px 9px; gap: 9px; }
+  .q-body     { padding: 10px 14px 14px; }
+  .hint-box   { margin: 8px 14px 0; }
+  #btn-submit { width: 100%; max-width: 340px; }
 }
 @media (max-width: 380px) {
-  .step-badge  { width: 26px; height: 26px; font-size: 12px; }
-  .q-key       { font-size: 13px; }
+  .step-badge { width: 26px; height: 26px; font-size: 12px; }
+  .q-key      { font-size: 13px; }
 }
 </style>
 </head>
 <body>
 
-<!-- =============== 상단 고정 바 =============== -->
 <div id="top-bar">
   <div class="top-inner">
     <span class="top-title">지리적 질문 만들기</span>
     <div class="meta-group">
-      <!-- ★ 수정: 이동반 입력칸 추가 (순서: 이동반 > 학번 > 이름) -->
       <span class="meta-label">이동반</span>
       <input id="inp-class" class="meta-input" type="text" placeholder="예) 1반">
       <span class="meta-label">학번</span>
@@ -454,31 +404,24 @@ body {
   </div>
 </div>
 
-<!-- =============== 메인 컨텐츠 =============== -->
 <div class="container">
 
-  <!-- 안내 박스 -->
   <div class="notice-box">
     <div class="notice-title">📌 활동 전 꼭 읽어보세요</div>
     <ul>
       <li>지금은 <strong>질문을 던지는 시간</strong>입니다. 답을 알고 있든 모르든 상관없이 질문을 만들어보세요.</li>
       <li>선택한 이미지·영상의 <strong>상황과 맥락을 반영</strong>해서 질문을 구체적으로 작성하세요.</li>
-      <li>💡 어려움의 있는 경우 힌트 버튼을 누르면 질문 만들기 도움말이 펼쳐집니다.</li>
+      <li>💡 어려움이 있는 경우 힌트 버튼을 누르면 질문 만들기 도움말이 펼쳐집니다.</li>
     </ul>
   </div>
 
-  <!-- 탐구 주제 + 이미지 업로드 카드 -->
   <div class="card">
     <div class="card-top-bar"></div>
     <div class="setup-card">
-
-      <!-- 탐구 주제 -->
       <div class="card-label">📝 탐구 주제</div>
-      <input id="inp-topic" class="text-input"
-             type="text"
+      <input id="inp-topic" class="text-input" type="text"
              placeholder="예) 서울 대림동 차이나타운 사진">
 
-      <!-- 이미지 업로드 -->
       <div class="card-label">🖼 탐구 이미지 첨부 <span style="font-weight:400;color:var(--muted)">(선택)</span></div>
       <div class="img-upload-zone" id="upload-zone">
         <input type="file" id="img-file" accept="image/*" onchange="onFileChange(event)">
@@ -493,19 +436,15 @@ body {
         <button class="img-remove-btn" onclick="removeImage()" title="이미지 제거">✕</button>
         <div class="img-filename" id="img-filename"></div>
       </div>
-
     </div>
   </div>
 
-  <!-- 질문 카드 목록 (JS 렌더링) -->
   <div id="q-cards"></div>
 
-  <!-- 제출 버튼 -->
   <div class="submit-area">
     <button id="btn-submit" onclick="submitData()">📤 제출하기</button>
   </div>
 
-  <!-- 진행 표시 -->
   <div id="progress-bar-wrap">
     <div class="progress-bg">
       <div class="progress-fill" id="progress-fill"></div>
@@ -515,22 +454,21 @@ body {
 
 </div>
 
-<!-- 토스트 -->
 <div id="toast"></div>
 
 <script>
 // ================================================================
-//  ★ 여기에 Apps Script 웹 앱 URL을 붙여 넣으세요 ★
-//  배포 > 웹 앱으로 배포 > URL 복사 후 아래 문자열과 교체
+//  GAS 웹앱 URL
 // ================================================================
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbxxzodGL7eiqMbXdumyVocUn-fjr6QL8_VzZ9UrEs8LiLrUYMYm3VDZe6n9lU_0re87/exec';
 
 // ================================================================
 //  단계 데이터
+//  ★ 버그 수정: id를 0~5로 통일 → textarea id(q0~q5)와 payload 키가 일치
 // ================================================================
 var STEPS = [
   {
-    id: 1, color: '#6b7a8d',
+    id: 0, color: '#6b7a8d',
     key: '무엇인가?', desc: '현상·대상 파악',
     ph: '이 장소 / 현상은 무엇인가? 처음 보는 사람에게 어떻게 설명할 수 있을까?',
     hints: [
@@ -540,7 +478,7 @@ var STEPS = [
     ]
   },
   {
-    id: 2, color: '#2563eb',
+    id: 1, color: '#2563eb',
     key: '어디인가? 왜 거기인가?', desc: '위치·입지 분석',
     ph: '왜 이 현상은 이 장소에서 나타나는가? 다른 곳이 아니라 왜 여기인가?',
     hints: [
@@ -550,7 +488,7 @@ var STEPS = [
     ]
   },
   {
-    id: 3, color: '#0d9488',
+    id: 2, color: '#0d9488',
     key: '어떻게 변화해 왔는가?', desc: '시간적 변화·원인·기술',
     ph: '과거와 현재를 비교하면 어떻게 달라졌나? 무엇이 변화를 이끌었나?',
     hints: [
@@ -560,7 +498,7 @@ var STEPS = [
     ]
   },
   {
-    id: 4, color: '#d97706',
+    id: 3, color: '#d97706',
     key: '다른 지역과 어떻게 연결·비교되는가?', desc: '공간적 연결·비교',
     ph: '이 현상은 다른 지역과 어떻게 이어지는가? 어떤 면에서 비슷하고 다른가?',
     hints: [
@@ -570,7 +508,7 @@ var STEPS = [
     ]
   },
   {
-    id: 5, color: '#dc2626',
+    id: 4, color: '#dc2626',
     key: '어떻게 변화해야 하는가?', desc: '가치 판단·미래 전망',
     ph: '현재 상태가 지속된다면 어떤 문제가 생길까? 어떤 방향으로 바뀌어야 할까?',
     hints: [
@@ -580,7 +518,7 @@ var STEPS = [
     ]
   },
   {
-    id: 6, color: '#7c3aed',
+    id: 5, color: '#7c3aed',
     key: '어떻게 재현되고 있는가?', desc: '미디어·담론·정당성',
     ph: '이 장소·현상은 미디어에서 어떻게 표현되고 있나? 그 표현은 공정한가?',
     hints: [
@@ -592,7 +530,7 @@ var STEPS = [
 ];
 
 // ================================================================
-//  카드 렌더링
+//  카드 렌더링 — textarea id = q0~q5 생성
 // ================================================================
 (function renderCards() {
   var container = document.getElementById('q-cards');
@@ -631,7 +569,6 @@ function toggleHint(btn) {
 // ================================================================
 var selectedImageBase64 = '';
 
-// 드래그 앤 드롭
 var zone = document.getElementById('upload-zone');
 zone.addEventListener('dragover',  function(e) { e.preventDefault(); zone.classList.add('dragover'); });
 zone.addEventListener('dragleave', function()  { zone.classList.remove('dragover'); });
@@ -654,12 +591,12 @@ function processFile(file) {
   if (file.size > 5 * 1024 * 1024) {
     showToast('파일 크기는 5MB 이하여야 합니다.', 'error'); return;
   }
-
   var reader = new FileReader();
   reader.onload = function(ev) {
     selectedImageBase64 = ev.target.result;
     document.getElementById('img-preview').src = selectedImageBase64;
-    document.getElementById('img-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
+    document.getElementById('img-filename').textContent =
+      file.name + ' (' + (file.size / 1024).toFixed(0) + ' KB)';
     document.getElementById('preview-wrap').classList.add('show');
     document.getElementById('upload-zone').style.display = 'none';
   };
@@ -679,8 +616,7 @@ function removeImage() {
 //  진행 표시
 // ================================================================
 function setProgress(pct, label) {
-  var wrap = document.getElementById('progress-bar-wrap');
-  wrap.classList.add('show');
+  document.getElementById('progress-bar-wrap').classList.add('show');
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('progress-label').textContent = label;
 }
@@ -703,7 +639,6 @@ function showToast(msg, type, duration) {
 //  제출 처리
 // ================================================================
 function submitData() {
-  // ★ 수정: classGroup 추가, 검증 메시지 수정
   var classGroup = document.getElementById('inp-class').value.trim();
   var studentId  = document.getElementById('inp-id').value.trim();
   var name       = document.getElementById('inp-name').value.trim();
@@ -718,7 +653,7 @@ function submitData() {
   btn.textContent = '제출 중...';
   setProgress(10, '데이터 준비 중...');
 
-  // ★ 수정: payload에 classGroup 추가
+  // ★ 버그 수정: q0~q5로 읽기 (STEPS id 0~5, textarea id q0~q5와 일치)
   var payload = {
     classGroup:  classGroup,
     studentId:   studentId,
@@ -739,13 +674,19 @@ function submitData() {
     setProgress(50, '서버에 전송 중...');
   }
 
+  // ★ AbortController: 15초 초과 시 타임아웃 처리
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, 15000);
+
   fetch(GAS_URL, {
-    method: 'POST',
-    mode: 'no-cors',
+    method:  'POST',
+    mode:    'no-cors',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body:    JSON.stringify(payload),
+    signal:  controller.signal
   })
   .then(function() {
+    clearTimeout(timer);
     setProgress(100, '제출 완료!');
     setTimeout(hideProgress, 1800);
     showToast('✅ 제출이 완료되었습니다!', 'ok', 4000);
@@ -755,9 +696,14 @@ function submitData() {
       btn.textContent = '📤 제출하기';
     }, 4500);
   })
-  .catch(function() {
+  .catch(function(err) {
+    clearTimeout(timer);
     hideProgress();
-    showToast('오류가 발생했습니다. 네트워크 상태를 확인하고 다시 시도해주세요.', 'error', 4000);
+    var msg = (err.name === 'AbortError')
+      ? '⏱ 서버 응답 초과 — GAS 배포 설정을 확인해주세요.'
+      : '❌ 오류: ' + err.message;
+    showToast(msg, 'error', 6000);
+    console.error('fetch 오류:', err);
     btn.disabled = false;
     btn.textContent = '📤 제출하기';
   });
